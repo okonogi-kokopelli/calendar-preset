@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar Preset</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- メインビュー -->
+    <div id="mainView">
+      <h1>Calendar Preset</h1>
+
+      <div class="section">
+        <h2>現在の状態を保存</h2>
+        <div class="input-group">
+          <input type="text" id="presetName" placeholder="プリセット名（例: 仕事用）">
+          <button id="savePreset">保存</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>クイックアクション</h2>
+        <div class="quick-actions">
+          <button id="selectAll">全て選択</button>
+          <button id="deselectAll">全て解除</button>
+        </div>
+        <div class="quick-action-settings">
+          <label class="checkbox-label">
+            <input type="checkbox" id="includePrimary">
+            <span>全て解除時に自分のカレンダーも解除</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>保存済みプリセット</h2>
+        <div id="presetList" class="preset-list">
+          <p class="empty-message">プリセットがありません</p>
+        </div>
+      </div>
+
+      <div id="message" class="message"></div>
+    </div>
+
+    <!-- 編集ビュー -->
+    <div id="editView" style="display: none;">
+      <div class="edit-header">
+        <button id="backToMain" class="back-btn">← 戻る</button>
+        <h1>プリセット編集</h1>
+      </div>
+
+      <div class="section">
+        <h2>プリセット情報</h2>
+        <div class="edit-info">
+          <p id="editPresetInfo"></p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>プリセット名</h2>
+        <div class="input-group">
+          <input type="text" id="editPresetName" placeholder="プリセット名">
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>カレンダー設定</h2>
+        <div class="edit-instruction">
+          <p>Googleカレンダーで表示したいカレンダーをチェックしてください。</p>
+          <p class="hint">現在のプリセットが適用されています。カレンダーを調整後、下の「更新」ボタンをクリックしてください。</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="edit-actions">
+          <button id="updatePreset" class="update-btn-large">更新</button>
+          <button id="cancelEditView" class="cancel-btn-large">キャンセル</button>
+        </div>
+      </div>
+
+      <div id="editMessage" class="message"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
