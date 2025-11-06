@@ -52,6 +52,9 @@ async function isCalendarTab() {
 // 編集中のプリセットIDを保存
 let editingPresetId = null;
 
+// ドラッグ&ドロップの状態管理
+let draggedElement = null;
+
 // プリセット一覧を表示
 async function renderPresets() {
   const { presets = {} } = await chrome.storage.local.get('presets');
@@ -68,9 +71,18 @@ async function renderPresets() {
 
   presetList.textContent = '';
 
-  for (const [id, preset] of Object.entries(presets)) {
+  // プリセットを順序でソート
+  const sortedPresets = Object.entries(presets).sort((a, b) => {
+    const orderA = a[1].order ?? Number.MAX_SAFE_INTEGER;
+    const orderB = b[1].order ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB;
+  });
+
+  for (const [id, preset] of sortedPresets) {
     const presetItem = document.createElement('div');
     presetItem.className = 'preset-item';
+    presetItem.draggable = true;
+    presetItem.dataset.presetId = id;
 
     const nameSpan = document.createElement('span');
     nameSpan.className = 'preset-name';
@@ -142,8 +154,138 @@ async function renderPresets() {
     presetItem.appendChild(nameSpan);
     presetItem.appendChild(buttonsDiv);
 
+    // ドラッグイベントリスナーを追加
+    presetItem.addEventListener('dragstart', handleDragStart);
+    presetItem.addEventListener('dragover', handleDragOver);
+    presetItem.addEventListener('drop', handleDrop);
+    presetItem.addEventListener('dragend', handleDragEnd);
+    presetItem.addEventListener('dragenter', handleDragEnter);
+    presetItem.addEventListener('dragleave', handleDragLeave);
+
     presetList.appendChild(presetItem);
   }
+}
+
+// ドラッグ&ドロップイベントハンドラ
+function handleDragStart(e) {
+  draggedElement = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  e.dataTransfer.dropEffect = 'move';
+
+  if (this !== draggedElement) {
+    // ドラッグ中の要素の直前・直後かチェック
+    const isDraggedPrev = this.nextElementSibling === draggedElement;
+    const isDraggedNext = this.previousElementSibling === draggedElement;
+
+    // マウスの位置を取得
+    const rect = this.getBoundingClientRect();
+    const threshold = rect.height * 0.3; // 上下30%の範囲
+    const mouseY = e.clientY - rect.top;
+
+    // マウスが要素の上30%にあるか、下30%にあるかで判定
+    this.classList.remove('drag-over-top', 'drag-over-bottom');
+
+    let showTop = false;
+    let showBottom = false;
+
+    if (mouseY < threshold) {
+      showTop = true;
+    } else if (mouseY > rect.height - threshold) {
+      showBottom = true;
+    } else {
+      // 中央40%の範囲では、より近い方を選択
+      const midPoint = rect.height / 2;
+      if (mouseY < midPoint) {
+        showTop = true;
+      } else {
+        showBottom = true;
+      }
+    }
+
+    // ドラッグ中の要素の直後の要素の上部にはラインを表示しない
+    if (showTop && isDraggedNext) {
+      showTop = false;
+    }
+
+    // ドラッグ中の要素の直前の要素の下部にはラインを表示しない
+    if (showBottom && isDraggedPrev) {
+      showBottom = false;
+    }
+
+    if (showTop) {
+      this.classList.add('drag-over-top');
+    } else if (showBottom) {
+      this.classList.add('drag-over-bottom');
+    }
+  }
+
+  return false;
+}
+
+function handleDragEnter(e) {
+  // dragover で処理するため、ここでは何もしない
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('drag-over-top', 'drag-over-bottom');
+}
+
+function handleDrop(e) {
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  }
+
+  if (draggedElement !== this) {
+    // drag-over-topまたはdrag-over-bottomクラスに基づいて挿入位置を決定
+    const insertBefore = this.classList.contains('drag-over-top');
+
+    if (insertBefore) {
+      // 上部ラインが表示されている場合、この要素の前に挿入
+      this.parentNode.insertBefore(draggedElement, this);
+    } else {
+      // 下部ラインが表示されている場合、この要素の後に挿入
+      this.parentNode.insertBefore(draggedElement, this.nextSibling);
+    }
+
+    // 順序を保存
+    savePresetOrder();
+  }
+
+  this.classList.remove('drag-over-top', 'drag-over-bottom');
+  return false;
+}
+
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+
+  // すべてのdrag-overクラスを削除
+  document.querySelectorAll('.preset-item').forEach(item => {
+    item.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+}
+
+// プリセットの順序を保存
+async function savePresetOrder() {
+  const { presets = {} } = await chrome.storage.local.get('presets');
+  const presetList = document.getElementById('presetList');
+  const presetItems = presetList.querySelectorAll('.preset-item');
+
+  presetItems.forEach((item, index) => {
+    const presetId = item.dataset.presetId;
+    if (presets[presetId]) {
+      presets[presetId].order = index;
+    }
+  });
+
+  await chrome.storage.local.set({ presets });
 }
 
 // メニューの開閉
@@ -238,10 +380,16 @@ async function savePreset() {
     const { presets = {} } = await chrome.storage.local.get('presets');
     const presetId = Date.now().toString();
 
+    // 新しいプリセットの順序を最後に設定
+    const maxOrder = Object.values(presets).reduce((max, preset) => {
+      return Math.max(max, preset.order ?? -1);
+    }, -1);
+
     presets[presetId] = {
       name: presetName,
       calendars: response.calendars,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      order: maxOrder + 1
     };
 
     await chrome.storage.local.set({ presets });
@@ -355,7 +503,8 @@ async function updatePreset() {
       name: presetName,
       calendars: response.calendars,
       createdAt: presets[editingPresetId].createdAt,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      order: presets[editingPresetId].order ?? 0
     };
 
     await chrome.storage.local.set({ presets });
