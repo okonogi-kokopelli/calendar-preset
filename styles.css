@@ -94,7 +94,9 @@ button:active {
   margin-bottom: 8px;
   background-color: #f8f9fa;
   border-radius: 6px;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, opacity 0.2s, transform 0.2s;
+  cursor: move;
+  position: relative;
 }
 
 .preset-item:hover {
@@ -103,6 +105,33 @@ button:active {
 
 .preset-item:last-child {
   margin-bottom: 0;
+}
+
+.preset-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+.preset-item.drag-over-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #1a73e8;
+  z-index: 1000;
+}
+
+.preset-item.drag-over-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #1a73e8;
+  z-index: 1000;
 }
 
 .preset-name {
