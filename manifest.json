@@ -30,11 +30,12 @@
     }
   ],
   "commands": {
-    "_execute_action": {
+    "toggle-side-panel": {
       "suggested_key": {
         "default": "Ctrl+Shift+K",
         "mac": "Command+Shift+K"
-      }
+      },
+      "description": "Toggle side panel"
     }
   }
 }

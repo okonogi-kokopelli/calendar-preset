@@ -624,46 +624,6 @@ async function loadIncludePrimarySetting() {
   document.getElementById('includePrimary').checked = includePrimary;
 }
 
-// background.jsからのメッセージを受信
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // メッセージ検証
-  if (!request || typeof request !== 'object') {
-    return;
-  }
-
-  if (!request.action || typeof request.action !== 'string') {
-    return;
-  }
-
-  // 許可されたアクションのみ
-  if (request.action === 'closeSidePanel') {
-    // サイドパネルを閉じる
-    window.close();
-  }
-});
-
-// サイドパネルが閉じられたことをbackground.jsに通知
-window.addEventListener('beforeunload', () => {
-  chrome.runtime.sendMessage({ action: 'sidePanelClosed' });
-});
-
-// タブの変更を監視してGoogleカレンダー以外のページでは自動で閉じる
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  const tab = await chrome.tabs.get(activeInfo.tabId);
-  if (tab && tab.url && !tab.url.includes('calendar.google.com')) {
-    window.close();
-  }
-});
-
-// タブのURLが更新された時も監視
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.url && tab.active) {
-    if (!changeInfo.url.includes('calendar.google.com')) {
-      window.close();
-    }
-  }
-});
-
 // イベントリスナー設定
 document.addEventListener('DOMContentLoaded', async () => {
   renderPresets();
