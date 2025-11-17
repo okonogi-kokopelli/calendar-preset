@@ -10,7 +10,10 @@
   <div class="container">
     <!-- メインビュー -->
     <div id="mainView">
-      <h1>Calendar Preset</h1>
+      <div class="main-header">
+        <h1>Calendar Preset</h1>
+        <button id="openSettings" class="settings-btn">⚙️</button>
+      </div>
 
       <div class="section">
         <h2>現在の状態を保存</h2>
@@ -74,6 +77,21 @@
       </div>
 
       <div class="section">
+        <h2>表示形式</h2>
+        <p class="hint">現在の表示形式: <strong><span id="currentViewType">-</span></strong></p>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="saveViewTypeForPreset">
+          <span>更新時に表示形式も保存する</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="applyViewTypeForPreset">
+          <span>適用時に表示形式も切り替える</span>
+        </label>
+      </div>
+
+      <div class="section">
         <div class="edit-actions">
           <button id="updatePreset" class="update-btn-large">更新</button>
           <button id="cancelEditView" class="cancel-btn-large">キャンセル</button>
@@ -81,6 +99,38 @@
       </div>
 
       <div id="editMessage" class="message"></div>
+    </div>
+
+    <!-- 設定ビュー -->
+    <div id="settingsView" style="display: none;">
+      <div class="edit-header">
+        <button id="backToMainFromSettings" class="back-btn">← 戻る</button>
+        <h1>設定</h1>
+      </div>
+
+      <div class="section">
+        <h2>表示形式の保存</h2>
+        <label class="checkbox-label">
+          <input type="checkbox" id="saveViewTypeByDefault">
+          <span>プリセット保存時に表示形式も保存する</span>
+        </label>
+        <p class="hint">OFF: 表示形式は保存されません</p>
+      </div>
+
+      <div class="section">
+        <h2>表示形式の切り替え</h2>
+        <label class="checkbox-label">
+          <input type="checkbox" id="applyViewTypeByDefault">
+          <span>プリセット適用時に表示形式も切り替える</span>
+        </label>
+        <p class="hint">OFF: プリセット適用時に表示形式は変更されません</p>
+      </div>
+
+      <div class="section">
+        <button id="saveSettings">保存</button>
+      </div>
+
+      <div id="settingsMessage" class="message"></div>
     </div>
   </div>
 

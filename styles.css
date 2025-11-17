@@ -19,10 +19,18 @@ body {
   padding: 16px;
 }
 
+/* メインヘッダー */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 h1 {
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 0;
   color: #1a73e8;
 }
 
@@ -155,8 +163,18 @@ button:active {
   background-color: #34a853;
 }
 
-.apply-btn:hover {
+.apply-btn:hover:not(:disabled) {
   background-color: #2d8e47;
+}
+
+.apply-btn:disabled {
+  background-color: #80868b;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.apply-btn.loading {
+  position: relative;
 }
 
 /* メニューボタン */
@@ -403,4 +421,55 @@ button:active {
 
 .preset-list::-webkit-scrollbar-thumb:hover {
   background: #bdc1c6;
+}
+
+/* 表示形式ラベル */
+.preset-name-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  margin-right: 8px;
+  overflow: hidden;
+}
+
+.view-type-label {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* 設定ボタン */
+.settings-btn {
+  background: #f5f5f5;
+  color: #5f6368;
+  border: 1px solid #dadce0;
+  padding: 6px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  min-width: auto;
+  line-height: 1;
+}
+
+.settings-btn:hover {
+  background: #e8eaed;
+}
+
+/* ヒントテキスト */
+.hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.section .hint {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.section .checkbox-label + .checkbox-label {
+  margin-top: 8px;
 }
