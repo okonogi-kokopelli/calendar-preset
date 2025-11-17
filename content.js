@@ -286,6 +286,22 @@ function findCalendarItems() {
   return [];
 }
 
+// 現在の表示形式を取得
+function getCurrentViewType() {
+  const url = window.location.href;
+
+  // URLパターンをチェック
+  if (url.includes('/r/day')) return 'day';
+  if (url.includes('/r/week')) return 'week';
+  if (url.includes('/r/month')) return 'month';
+  if (url.includes('/r/year')) return 'year';
+  if (url.includes('/r/agenda')) return 'agenda';
+  if (url.includes('/r/customweek')) return 'customweek';
+  if (url.includes('/r/customday')) return 'customday';
+
+  return null;
+}
+
 // カレンダーの状態を取得（チェックされているカレンダーのIDだけ返す）
 async function getCurrentState() {
   // 全てのカレンダーを読み込む
@@ -314,7 +330,10 @@ async function getCurrentState() {
       }
     });
 
-    return { calendars: checkedCalendarIds };
+    return {
+      calendars: checkedCalendarIds,
+      viewType: getCurrentViewType()
+    };
   }
 
   items.forEach((item, index) => {
@@ -348,7 +367,10 @@ async function getCurrentState() {
     }
   });
 
-  return { calendars: checkedCalendarIds };
+  return {
+    calendars: checkedCalendarIds,
+    viewType: getCurrentViewType()
+  };
 }
 
 // カレンダーの状態を適用（段階的スクロール）
