@@ -5,14 +5,8 @@ import { loadSettings, loadPresets, savePresets } from './storage.js';
 import { isCalendarTab, getActiveTab, sendMessageToTab } from './tabs.js';
 import { renderPresets } from '../components/preset-list.js';
 import { viewTypeLabels } from '../constants.js';
-import {
-  URL_CHANGE_POLL_INTERVAL_MS,
-  URL_CHANGE_MAX_ATTEMPTS,
-  EARLY_CANCEL_DETECTION_THRESHOLD,
-  PAGE_LOAD_TIMEOUT_MS,
-  POST_TIMEOUT_MAX_CHECKS,
-  CALENDAR_INIT_DELAY_MS
-} from '../../shared/constants.js';
+import { CALENDAR_INIT_DELAY_MS } from '../../shared/constants.js';
+import { waitForPageTransition } from '../utils/page-transition.js';
 
 // プリセット保存
 export async function savePreset() {
@@ -270,102 +264,9 @@ export async function applyPreset(presetId, buttonElement) {
 
         // URLが異なる場合のみ、表示形式を変更
         if (currentUrl !== newUrl) {
-          // ========================================
-          // ステップ1: ページ遷移を開始
-          // ========================================
-          // chrome.tabs.update()を使用してURLを変更
-          // （content scriptからの遷移ではないため、警告が出にくい）
-          await chrome.tabs.update(tab.id, { url: newUrl });
+          const result = await waitForPageTransition(tab, currentUrl, newUrl, preset.viewType);
 
-          // ========================================
-          // ステップ2: URLが実際に変わるまで待つ
-          // ========================================
-          // chrome.tabs.update()を呼んでも、実際にURLが変わるまでに時間がかかる
-          // また、「このサイトを離れますか？」のダイアログでユーザーが決断するまで時間がかかる場合がある
-          // そのため、URLが変わったことを確認するまでポーリング
-          const maxAttempts = 50; // 最大10秒待機（200ms × 50回）
-          let urlChanged = false;
-
-          for (let i = 0; i < maxAttempts; i++) {
-            await new Promise(resolve => setTimeout(resolve, 200));
-            const currentTab = await chrome.tabs.get(tab.id);
-
-            // URL変更を検知
-            if (currentTab.url.includes(preset.viewType)) {
-              urlChanged = true;
-              break; // URL変更を検知したらループを抜ける
-            }
-
-            // 早期キャンセル検知（2秒経過後）
-            // URLが変わらず、かつページが完了状態（complete）の場合、キャンセルされた可能性が高い
-            if (i >= 10 && // 2秒経過（200ms × 10）
-                currentTab.url === currentUrl && // URLが元のまま
-                currentTab.status === 'complete') { // ページは完了状態
-              break; // キャンセルと判断して早期終了
-            }
-          }
-
-          // URLが変わらなかった場合 = ページ遷移がキャンセルされた
-          if (!urlChanged) {
-            showMessage('表示形式の変更がキャンセルされました', 'info');
-            return; // カレンダー適用をスキップして終了
-          }
-
-          // ========================================
-          // ステップ3: ページ読み込み完了を待つ
-          // ========================================
-          // URLは変わったが、ページの読み込みが完了するまで待つ必要がある
-          // タイムアウト付きでページ読み込み完了を待機（レースコンディション対策）
-          const loadResult = await new Promise((resolve) => {
-            let finished = false;
-            let listener = null;
-
-            const timeoutId = setTimeout(() => {
-              if (!finished) {
-                finished = true;
-                if (listener) chrome.tabs.onUpdated.removeListener(listener);
-                resolve('timeout');
-              }
-            }, 5000);
-
-            listener = (tabId, changeInfo, updatedTab) => {
-              if (tabId === tab.id && changeInfo.status === 'complete') {
-                if (!finished) {
-                  finished = true;
-                  chrome.tabs.onUpdated.removeListener(listener);
-                  clearTimeout(timeoutId);
-                  resolve('complete');
-                }
-              }
-            };
-            chrome.tabs.onUpdated.addListener(listener);
-          });
-
-          // タイムアウトした場合、追加で待機
-          if (loadResult === 'timeout') {
-
-            // タイムアウト後も追加で待機（ユーザーが遅れて「離れる」をクリックした場合に対応）
-            // 最大10秒間、200msごとにポーリングでページ遷移完了を確認
-            const maxPostTimeoutChecks = 50; // 10秒（200ms × 50）
-            for (let i = 0; i < maxPostTimeoutChecks; i++) {
-              await new Promise(resolve => setTimeout(resolve, 200));
-              const currentTab = await chrome.tabs.get(tab.id);
-
-              // ページ遷移が完了したか確認（URLが変わって、読み込み完了）
-              if (currentTab.url.includes(preset.viewType) &&
-                  currentTab.status === 'complete') {
-                break; // 遷移完了を検知してループを抜ける
-              }
-            }
-          }
-
-          // ========================================
-          // ステップ4: 最終確認
-          // ========================================
-          // タイムアウト後も、URLが本当に変わったか最終確認
-          // （遅延してキャンセルされた場合に備えて）
-          const updatedTab = await chrome.tabs.get(tab.id);
-          if (!updatedTab.url.includes(preset.viewType)) {
+          if (!result.success) {
             showMessage('表示形式の変更がキャンセルされました', 'info');
             return; // カレンダー適用をスキップして終了
           }
@@ -376,7 +277,7 @@ export async function applyPreset(presetId, buttonElement) {
       // ステップ5: カレンダー状態を適用
       // ========================================
       // ページ読み込みが完了したが、Googleカレンダーのスクリプトが完全に初期化されるまで少し待つ
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, CALENDAR_INIT_DELAY_MS));
 
       // カレンダーを適用
       await sendMessageToTab(tab.id, {
