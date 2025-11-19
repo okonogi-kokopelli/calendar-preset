@@ -4,13 +4,9 @@ import { MAX_PRESET_NAME_LENGTH } from '../../shared/constants.js';
 export function sanitizeInput(input) {
   if (typeof input !== 'string') return '';
 
-  // HTMLタグを除去
-  const div = document.createElement('div');
-  div.textContent = input;
-  let sanitized = div.innerHTML;
-
-  // さらに特殊文字をエスケープ
-  sanitized = sanitized
+  // HTML特殊文字をエスケープ
+  const sanitized = input
+    .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
