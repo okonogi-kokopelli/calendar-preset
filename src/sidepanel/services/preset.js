@@ -1,6 +1,6 @@
 import { sanitizeInput } from '../utils/sanitize.js';
 import { showMessage } from '../ui/messages.js';
-import { showMainView, showEditView, setEditingPresetId, editingPresetId } from '../ui/views.js';
+import { showMainView, showEditView, setEditingPresetId, getEditingPresetId } from '../ui/views.js';
 import { loadSettings, loadPresets, savePresets } from './storage.js';
 import { isCalendarTab, getActiveTab, sendMessageToTab } from './tabs.js';
 import { renderPresets } from '../components/preset-list.js';
@@ -179,25 +179,26 @@ export async function updatePreset() {
     }
 
     const presets = await loadPresets();
+    const editingId = getEditingPresetId();
 
-    if (!presets[editingPresetId]) {
+    if (!presets[editingId]) {
       showMessage('プリセットが見つかりません', 'error', true);
       return;
     }
 
     // 個別設定に応じて viewType を保存
-    const viewType = saveViewType ? response.viewType : presets[editingPresetId].viewType;
+    const viewType = saveViewType ? response.viewType : presets[editingId].viewType;
 
     // 既存のプリセットを更新
-    presets[editingPresetId] = {
+    presets[editingId] = {
       name: presetName,
       calendars: response.calendars,
       viewType: viewType,
       saveViewType: saveViewType,
       applyViewType: applyViewType,
-      createdAt: presets[editingPresetId].createdAt,
+      createdAt: presets[editingId].createdAt,
       updatedAt: new Date().toISOString(),
-      order: presets[editingPresetId].order ?? 0
+      order: presets[editingId].order ?? 0
     };
 
     await savePresets(presets);

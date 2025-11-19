@@ -1,5 +1,9 @@
 // 編集中のプリセットIDを保存
-export let editingPresetId = null;
+let editingPresetId = null;
+
+export function getEditingPresetId() {
+  return editingPresetId;
+}
 
 export function setEditingPresetId(id) {
   editingPresetId = id;
