@@ -1,5 +1,8 @@
 import { loadPresets, savePresets } from '../services/storage.js';
 
+// ドラッグ&ドロップの閾値設定
+const DRAG_THRESHOLD_RATIO = 0.3;  // 上下30%の検出ゾーン（残り中央40%）
+
 // ドラッグ&ドロップの状態管理
 let draggedElement = null;
 
@@ -24,7 +27,7 @@ export function handleDragOver(e) {
 
     // マウスの位置を取得
     const rect = this.getBoundingClientRect();
-    const threshold = rect.height * 0.3; // 上下30%の範囲
+    const threshold = rect.height * DRAG_THRESHOLD_RATIO;
     const mouseY = e.clientY - rect.top;
 
     // マウスが要素の上30%にあるか、下30%にあるかで判定
