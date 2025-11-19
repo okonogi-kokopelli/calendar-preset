@@ -5,8 +5,27 @@ import { SCROLL_STEP_RATIO, SCROLL_STEP_MIN, SCROLL_DELAY } from '../../shared/c
 // 実行中フラグ（連続クリック防止）
 let isExecuting = false;
 
-// カレンダーの状態を適用（段階的スクロール）
-// calendarsはチェックするカレンダーIDの配列
+/**
+ * プリセットを適用してカレンダーのチェック状態を変更する
+ *
+ * Googleカレンダーの仮想スクロールに対応するため、段階的にスクロールしながら
+ * 全てのチェックボックスを処理します。
+ *
+ * @param {string[]} calendars - チェックするカレンダーIDの配列
+ *   この配列に含まれるカレンダーはチェックされ、含まれないカレンダーはチェック解除されます。
+ *   各文字列はカレンダーの一意な識別子（data-id属性またはカレンダー名）です。
+ * @returns {Promise<void>} 全てのチェックボックスの処理が完了したら解決されます
+ *
+ * @description
+ * スクロール戦略:
+ *   - スクロール可能なコンテナを検出した場合、段階的にスクロールします
+ *   - 各ステップで一時停止し、DOMが更新されるのを待ちます
+ *   - これにより、仮想スクロールでレンダリングされるチェックボックスも確実に処理できます
+ *
+ * 重複排除:
+ *   - processedCheckboxesセットでチェックボックスを追跡
+ *   - スクロール中に同じ要素を複数回処理することを防ぎます
+ */
 export async function applyPreset(calendars) {
   if (isExecuting) {
     return;
@@ -94,7 +113,18 @@ export async function applyPreset(calendars) {
   }
 }
 
-// 全て選択（段階的スクロール）
+/**
+ * 全てのカレンダーを選択する
+ *
+ * Googleカレンダーの仮想スクロールに対応するため、段階的にスクロールしながら
+ * 全てのチェックボックスをチェック状態にします。
+ *
+ * @returns {Promise<void>} 全てのチェックボックスの処理が完了したら解決されます
+ *
+ * @description
+ * applyPresetと同じスクロール戦略を使用して、仮想スクロールコンテナ内の
+ * 全てのカレンダーチェックボックスを確実に選択します。
+ */
 export async function selectAll() {
   if (isExecuting) {
     return;
@@ -169,7 +199,21 @@ export async function selectAll() {
   }
 }
 
-// 全て解除（段階的スクロール）
+/**
+ * 全てのカレンダーを解除する
+ *
+ * Googleカレンダーの仮想スクロールに対応するため、段階的にスクロールしながら
+ * 全てのチェックボックスをチェック解除します。
+ *
+ * @param {boolean} [includePrimary=true] - プライマリカレンダー（最初のカレンダー）も解除するか
+ *   true: 全てのカレンダーを解除（デフォルト）
+ *   false: プライマリカレンダーを残して他のカレンダーのみ解除
+ * @returns {Promise<void>} 全てのチェックボックスの処理が完了したら解決されます
+ *
+ * @description
+ * プライマリカレンダー（リスト内の最初のカレンダー）を保持するオプションがあります。
+ * これにより、ユーザーの主要カレンダーを残したまま他のカレンダーを一括解除できます。
+ */
 export async function deselectAll(includePrimary = true) {
   if (isExecuting) {
     return;
