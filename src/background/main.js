@@ -6,17 +6,7 @@ import {
   handleTabUpdated
 } from './tabs.js';
 
-// ショートカットキーのコマンドリスナー
-chrome.commands.onCommand.addListener((command, tab) => {
-  if (command === 'toggle-side-panel') {
-    if (tab && tab.url && tab.url.includes(CALENDAR_URL_PATTERN)) {
-      // 同期的に実行してユーザージェスチャーのコンテキストを保持
-      toggleSidePanelSync(tab.windowId);
-    }
-  }
-});
-
-// アクションアイコンをクリック時にサイドパネルをトグル
+// アクションアイコンをクリック時（またはショートカットキー）にサイドパネルをトグル
 chrome.action.onClicked.addListener((tab) => {
   // Googleカレンダーのページでのみサイドパネルを有効化
   if (tab.url && tab.url.includes(CALENDAR_URL_PATTERN)) {
