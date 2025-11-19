@@ -14,13 +14,14 @@
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
   "side_panel": {
-    "default_path": "popup.html"
+    "default_path": "sidepanel.html"
   },
   "action": {
     "default_title": "Calendar Preset"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -30,12 +31,21 @@
     }
   ],
   "commands": {
-    "toggle-side-panel": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+K",
         "mac": "Command+Shift+K"
-      },
-      "description": "Toggle side panel"
+      }
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/shared/constants.js",
+        "src/content/*.js",
+        "src/content/calendar/*.js"
+      ],
+      "matches": ["https://calendar.google.com/*"]
+    }
+  ]
 }

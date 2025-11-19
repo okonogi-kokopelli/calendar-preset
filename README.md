@@ -123,24 +123,53 @@ cd calendar-preset
 
 ```
 calendar-preset/
-├── manifest.json       # 拡張機能の設定（Manifest V3）
-├── background.js       # バックグラウンドスクリプト（タブ管理）
-├── popup.html          # サイドパネルUI
-├── popup.js            # サイドパネル制御ロジック
-├── content.js          # Googleカレンダー操作スクリプト
-├── styles.css          # サイドパネルのスタイルシート
-└── README.md           # 本ファイル
+├── manifest.json          # 拡張機能の設定（Manifest V3）
+├── background.js          # Service Workerエントリーポイント
+├── content.js             # Content Scriptエントリーポイント
+├── sidepanel.html         # サイドパネルUI
+├── styles.css             # サイドパネルのスタイルシート
+├── README.md              # 本ファイル（ユーザー向け）
+└── src/                   # モジュール群（ES Modules）
+    ├── shared/            # 共通定数・ユーティリティ
+    │   └── constants.js
+    ├── background/        # Service Worker（4モジュール）
+    │   ├── main.js
+    │   ├── state.js
+    │   ├── sidepanel.js
+    │   └── tabs.js
+    ├── content/           # Content Script（6モジュール）
+    │   ├── main.js
+    │   ├── message-handler.js
+    │   └── calendar/
+    │       ├── dom.js
+    │       ├── state.js
+    │       ├── actions.js
+    │       └── utils.js
+    └── sidepanel/         # Side Panel（11モジュール）
+        ├── main.js
+        ├── constants.js
+        ├── utils/
+        ├── ui/
+        ├── services/
+        └── components/
 ```
 
 ---
 
 ## 技術仕様
 
+### アーキテクチャ
+
+**モジュール構成**: ES Modules（VanillaJS）でコンポーネント化
+- ビルドツール不要
+- 機能別にモジュール分割（保守性向上）
+- 共通定数で重複を削減
+
 ### データフロー
 
-1. **content.js**: Googleカレンダーのページからカレンダー情報を取得
-2. **popup.js**: ユーザー操作を受け付け、content.jsにメッセージを送信
-3. **content.js**: カレンダーの表示状態を変更（チェックボックスの操作）
+1. **Content Script** (`src/content/`): Googleカレンダーのページからカレンダー情報を取得
+2. **Side Panel** (`src/sidepanel/`): ユーザー操作を受け付け、Content Scriptにメッセージを送信
+3. **Content Script**: カレンダーの表示状態を変更（チェックボックスの操作）
 4. **Chrome Storage API**: プリセットデータをローカルに永続化
 
 ### カレンダーの識別方法
@@ -256,6 +285,7 @@ calendar-preset/
 2. **権限の最小化**: 必要最小限のhost_permissionsのみ（`https://calendar.google.com/*`）
 3. **ローカルストレージ**: プリセットデータは全てローカルに保存（外部送信なし）
 4. **入力サニタイズ**: プリセット名などのユーザー入力を適切に処理
+5. **Web Accessible Resources**: Content ScriptでES Modulesを使用するため、インポートされるモジュールを`web_accessible_resources`に宣言する必要があります。アクセスは`calendar.google.com`ドメインのみに制限されています
 
 ---
 
@@ -307,37 +337,47 @@ button {
 
 ### カレンダー検出ロジックのカスタマイズ
 
-`content.js` の以下の関数を編集：
+`src/content/calendar/` の以下のモジュールを編集：
 
-- `getCurrentState()`: カレンダー状態の取得
-- `applyPreset()`: プリセットの適用
-- `getCalendarId()`: カレンダーID取得ロジック
+- `state.js`: カレンダー状態の取得（`getCurrentState()`）
+- `actions.js`: プリセットの適用（`applyPreset()`）
+- `utils.js`: カレンダーID取得ロジック（`getCalendarId()`）
 
 ---
 
 ## 開発
 
+### 開発者向けドキュメント
+
+詳細な開発者向けドキュメント（アーキテクチャ、設計決定、開発ガイドライン等）は、プロジェクトルートの `CLAUDE.md` を参照してください（gitで追跡されていません）。
+
 ### デバッグ方法
 
 1. **Content Script**: Googleカレンダーのページで F12 → Console
-2. **Background Script**: `chrome://extensions/` → 「Service Workerを検査」
-3. **Popup (Side Panel)**: サイドパネル上で右クリック → 「検証」
+2. **Service Worker**: `chrome://extensions/` → 「Service Workerを検査」
+3. **Side Panel**: サイドパネル上で右クリック → 「検証」
 
-### 主要な関数
+### 主要なモジュール
 
-#### background.js
-- `handleTabChange()`: タブ切り替え時のサイドパネル開閉処理
+#### src/background/
+- `main.js`: イベントリスナー登録
+- `state.js`: サイドパネル状態管理
+- `sidepanel.js`: サイドパネル操作（`toggleSidePanelSync()`）
+- `tabs.js`: タブ/ウィンドウ管理（`handleTabChange()`）
 
-#### content.js
-- `getCurrentState()`: 現在チェックされているカレンダーのIDを取得
-- `applyPreset(calendars)`: 指定されたカレンダーIDリストを適用
-- `selectAll()`: 全てのカレンダーを選択
-- `deselectAll(includePrimary)`: 全てのカレンダーを解除
+#### src/content/
+- `message-handler.js`: メッセージリスナー
+- `calendar/state.js`: カレンダー状態取得（`getCurrentState()`）
+- `calendar/actions.js`: カレンダー操作（`applyPreset()`, `selectAll()`, `deselectAll()`）
+- `calendar/dom.js`: DOM操作（グループ展開、スクロール）
+- `calendar/utils.js`: ユーティリティ（`getCalendarId()`, `getCalendarName()`）
 
-#### popup.js
-- `savePreset()`: プリセットを保存
-- `applyPreset(presetId)`: プリセットを適用
-- `editPreset(presetId)`: プリセットを編集
-- `deletePreset(presetId)`: プリセットを削除
-- `savePresetOrder()`: プリセットの表示順序を保存
-- `handleDragStart()`, `handleDragOver()`, `handleDrop()`, `handleDragEnd()`: ドラッグ&ドロップイベント処理
+#### src/sidepanel/
+- `main.js`: エントリーポイント、イベントリスナー登録
+- `services/preset.js`: プリセット管理（`savePreset()`, `applyPreset()`, `editPreset()`, `deletePreset()`）
+- `services/storage.js`: Chrome Storage操作
+- `components/preset-list.js`: プリセット一覧レンダリング
+- `components/drag-drop.js`: ドラッグ&ドロップ処理
+
+#### src/shared/
+- `constants.js`: 共通定数（URLパターン、デフォルト設定、スクロール設定等）
