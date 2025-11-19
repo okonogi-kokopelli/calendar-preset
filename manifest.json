@@ -42,11 +42,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "src/shared/*.js",
+        "src/shared/constants.js",
         "src/content/*.js",
-        "src/content/calendar/*.js",
-        "src/sidepanel/*.js",
-        "src/sidepanel/**/*.js"
+        "src/content/calendar/*.js"
       ],
       "matches": ["https://calendar.google.com/*"]
     }
