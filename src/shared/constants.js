@@ -8,7 +8,15 @@ export const DEFAULT_SETTINGS = {
   applyViewTypeByDefault: true
 };
 
-// デフォルトのincludePrimary設定
+/**
+ * デフォルトのincludePrimary設定
+ * 「全て解除」機能実行時に、プライマリカレンダー（最初のカレンダー）を解除するかどうかの設定
+ *
+ * - true: プライマリカレンダーも含めて全て解除
+ * - false: プライマリカレンダーを残して他のカレンダーのみ解除（デフォルト）
+ *
+ * プライマリカレンダーは通常、ユーザーのメインカレンダーを指します（共有カレンダーやサブカレンダーではない）
+ */
 export const DEFAULT_INCLUDE_PRIMARY = false;
 
 // 表示形式の日本語ラベル
