@@ -285,6 +285,7 @@ calendar-preset/
 2. **権限の最小化**: 必要最小限のhost_permissionsのみ（`https://calendar.google.com/*`）
 3. **ローカルストレージ**: プリセットデータは全てローカルに保存（外部送信なし）
 4. **入力サニタイズ**: プリセット名などのユーザー入力を適切に処理
+5. **Web Accessible Resources**: Content ScriptでES Modulesを使用するため、インポートされるモジュールを`web_accessible_resources`に宣言する必要があります。アクセスは`calendar.google.com`ドメインのみに制限されています
 
 ---
 
