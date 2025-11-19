@@ -14,8 +14,9 @@ export function toggleMenu(menuContainer) {
     const btnRect = menuBtn.getBoundingClientRect();
 
     // メニューのデフォルト位置（下向き、右寄せ）
+    const menuWidth = 90; // メニューの幅
     let top = btnRect.bottom + 4;
-    let left = btnRect.right - 120; // メニューの幅 120px
+    let left = btnRect.right - menuWidth;
 
     // 画面の下端からの余白を確認
     const menuHeight = 80; // メニューの高さ（約）
@@ -34,8 +35,8 @@ export function toggleMenu(menuContainer) {
     }
 
     // 右端に寄せすぎないように調整
-    if (left + 120 > window.innerWidth - 8) {
-      left = window.innerWidth - 128;
+    if (left + menuWidth > window.innerWidth - 8) {
+      left = window.innerWidth - menuWidth - 8;
     }
 
     menuDropdown.style.top = `${top}px`;

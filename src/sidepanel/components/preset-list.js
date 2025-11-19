@@ -68,10 +68,14 @@ export async function renderPresets(editPresetCallback, deletePresetCallback, ap
     const menuContainer = document.createElement('div');
     menuContainer.className = 'menu-container';
 
-    // メニューボタン（⋮）
+    // メニューボタン
     const menuBtn = document.createElement('button');
-    menuBtn.textContent = '⋮';
     menuBtn.className = 'menu-btn';
+    const menuIcon = document.createElement('img');
+    menuIcon.src = 'assets/icons/more_vert.svg';
+    menuIcon.alt = 'Menu';
+    menuIcon.className = 'icon';
+    menuBtn.appendChild(menuIcon);
     menuBtn.onclick = (e) => {
       e.stopPropagation();
       toggleMenu(menuContainer);
@@ -83,9 +87,10 @@ export async function renderPresets(editPresetCallback, deletePresetCallback, ap
 
     const editMenuItem = document.createElement('div');
     editMenuItem.className = 'menu-item';
-    const editIcon = document.createElement('span');
-    editIcon.className = 'menu-icon';
-    editIcon.textContent = '✏️';
+    const editIcon = document.createElement('img');
+    editIcon.src = 'assets/icons/edit.svg';
+    editIcon.alt = 'Edit';
+    editIcon.className = 'menu-icon icon';
     const editText = document.createElement('span');
     editText.textContent = '編集';
     editMenuItem.appendChild(editIcon);
@@ -97,9 +102,10 @@ export async function renderPresets(editPresetCallback, deletePresetCallback, ap
 
     const deleteMenuItem = document.createElement('div');
     deleteMenuItem.className = 'menu-item delete-menu-item';
-    const deleteIcon = document.createElement('span');
-    deleteIcon.className = 'menu-icon';
-    deleteIcon.textContent = '🗑️';
+    const deleteIcon = document.createElement('img');
+    deleteIcon.src = 'assets/icons/delete.svg';
+    deleteIcon.alt = 'Delete';
+    deleteIcon.className = 'menu-icon icon';
     const deleteText = document.createElement('span');
     deleteText.textContent = '削除';
     deleteMenuItem.appendChild(deleteIcon);
