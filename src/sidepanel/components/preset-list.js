@@ -11,6 +11,18 @@ import {
 
 // プリセット一覧を表示
 export async function renderPresets(editPresetCallback, deletePresetCallback, applyPresetCallback) {
+  // パラメータ検証（防御的プログラミング）
+  if (typeof editPresetCallback !== 'function' ||
+      typeof deletePresetCallback !== 'function' ||
+      typeof applyPresetCallback !== 'function') {
+    console.error('renderPresets: すべてのパラメータは関数である必要があります', {
+      editPresetCallback: typeof editPresetCallback,
+      deletePresetCallback: typeof deletePresetCallback,
+      applyPresetCallback: typeof applyPresetCallback
+    });
+    return;
+  }
+
   const presets = await loadPresets();
   const presetList = document.getElementById('presetList');
 
