@@ -5,6 +5,14 @@ import { loadSettings, loadPresets, savePresets } from './storage.js';
 import { isCalendarTab, getActiveTab, sendMessageToTab } from './tabs.js';
 import { renderPresets } from '../components/preset-list.js';
 import { viewTypeLabels } from '../constants.js';
+import {
+  URL_CHANGE_POLL_INTERVAL_MS,
+  URL_CHANGE_MAX_ATTEMPTS,
+  EARLY_CANCEL_DETECTION_THRESHOLD,
+  PAGE_LOAD_TIMEOUT_MS,
+  POST_TIMEOUT_MAX_CHECKS,
+  CALENDAR_INIT_DELAY_MS
+} from '../../shared/constants.js';
 
 // プリセット保存
 export async function savePreset() {
