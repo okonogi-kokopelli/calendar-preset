@@ -32,6 +32,7 @@ export const SIDEPANEL_MIN_INTERVAL = 50; // 最小間隔（ms）
 
 // 入力制限
 export const MAX_PRESET_NAME_LENGTH = 100;
+// カレンダー項目検出時の最大テキスト長
 export const MAX_CALENDAR_TEXT_LENGTH = 200;
 
 // プリセット適用時のタイミング設定（表示形式切り替え時）
