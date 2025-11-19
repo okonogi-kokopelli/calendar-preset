@@ -51,7 +51,7 @@ export function findScrollableElement(sampleElement) {
 
   while (scrollableElement && scrollableElement !== document.body && attempts < 20) {
     const style = window.getComputedStyle(scrollableElement);
-    const hasScroll = scrollableElement.scrollHeight > scrollableElement.clientHeight + 10;
+    const hasScroll = scrollableElement.scrollHeight > scrollableElement.clientHeight;
 
     if ((style.overflowY === 'auto' || style.overflowY === 'scroll') && hasScroll) {
       return scrollableElement;
