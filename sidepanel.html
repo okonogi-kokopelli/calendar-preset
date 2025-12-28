@@ -83,12 +83,18 @@
 
       <div class="section">
         <h2>表示形式</h2>
-        <p class="hint">現在の表示形式: <strong><span id="currentViewType">-</span></strong></p>
+        <p class="hint">現在の表示形式: <span id="currentViewType">-</span></p>
 
-        <label class="checkbox-label">
-          <input type="checkbox" id="saveViewTypeForPreset">
-          <span>更新時に表示形式も保存する</span>
-        </label>
+        <div class="select-group">
+          <label for="editViewType">保存する表示形式:</label>
+          <select id="editViewType">
+            <option value="day">日</option>
+            <option value="week">週</option>
+            <option value="month">月</option>
+            <option value="year">年</option>
+            <option value="agenda">スケジュール</option>
+          </select>
+        </div>
 
         <label class="checkbox-label">
           <input type="checkbox" id="applyViewTypeForPreset">
