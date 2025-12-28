@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Calendar Preset",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Googleカレンダーの表示設定をプリセットで保存・切り替え",
   "icons": {
     "16": "icons/app_icon16.png",
