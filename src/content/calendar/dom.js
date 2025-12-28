@@ -1,5 +1,35 @@
 import { MAX_CALENDAR_TEXT_LENGTH } from '../../shared/constants.js';
 
+export function waitForDomStable(container, { timeout = 500, stableTime = 50 } = {}) {
+  return new Promise((resolve) => {
+    let timeoutId;
+    let stableTimeoutId;
+
+    const observer = new MutationObserver(() => {
+      clearTimeout(stableTimeoutId);
+      stableTimeoutId = setTimeout(() => {
+        observer.disconnect();
+        clearTimeout(timeoutId);
+        resolve();
+      }, stableTime);
+    });
+
+    observer.observe(container, { childList: true, subtree: true });
+
+    timeoutId = setTimeout(() => {
+      observer.disconnect();
+      clearTimeout(stableTimeoutId);
+      resolve();
+    }, timeout);
+
+    stableTimeoutId = setTimeout(() => {
+      observer.disconnect();
+      clearTimeout(timeoutId);
+      resolve();
+    }, stableTime);
+  });
+}
+
 // 折りたたまれているカレンダーグループを展開
 export async function expandAllCalendarGroups() {
   // カレンダーリストのコンテナを探す
@@ -38,9 +68,9 @@ export async function expandAllCalendarGroups() {
     }
   });
 
-  // 展開後のDOMの更新を待つ
+  // 展開後のDOMの更新を待つ（MutationObserverで完了検知）
   if (expandedCount > 0) {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await waitForDomStable(calendarListContainer, { timeout: 500, stableTime: 50 });
   }
 }
 

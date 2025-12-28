@@ -1,9 +1,27 @@
 import { expandAllCalendarGroups, findScrollableElement, findSampleCheckbox, isCalendarCheckbox } from './dom.js';
 import { setCheckboxState, getCalendarId } from './utils.js';
-import { SCROLL_STEP_RATIO, SCROLL_STEP_MIN, SCROLL_DELAY } from '../../shared/constants.js';
+import { SCROLL_STEP_RATIO, SCROLL_STEP_MIN, SCROLL_DELAY, MAX_NO_NEW_CHECKBOX_COUNT } from '../../shared/constants.js';
 
 // 実行中フラグ（連続クリック防止）
 let isExecuting = false;
+
+/**
+ * 早期終了判定を行うカウンターを更新する
+ *
+ * 新しいチェックボックスが見つからない状態が続いた場合、
+ * スクロールを早期終了するための判定を行います。
+ *
+ * @param {boolean} foundNew - 新しいチェックボックスが見つかったかどうか
+ * @param {number} noNewCheckboxCount - 現在のカウント値
+ * @returns {{ count: number, shouldTerminate: boolean }} 更新後のカウントと終了判定
+ */
+function updateEarlyTerminationCheck(foundNew, noNewCheckboxCount) {
+  if (foundNew) {
+    return { count: 0, shouldTerminate: false };
+  }
+  const newCount = noNewCheckboxCount + 1;
+  return { count: newCount, shouldTerminate: newCount >= MAX_NO_NEW_CHECKBOX_COUNT };
+}
 
 /**
  * プリセットを適用してカレンダーのチェック状態を変更する
@@ -83,17 +101,21 @@ export async function applyPreset(calendars) {
     const scrollStep = Math.max(clientHeight * SCROLL_STEP_RATIO, SCROLL_STEP_MIN);
     scrollableElement.scrollTop = 0;
 
+    let noNewCheckboxCount = 0;
+
     for (let scrollPos = 0; scrollPos <= scrollHeight; scrollPos += scrollStep) {
       scrollableElement.scrollTop = scrollPos;
       await new Promise(resolve => setTimeout(resolve, SCROLL_DELAY));
 
       // 現在表示されているチェックボックスを操作
       const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+      let foundNew = false;
 
       allCheckboxes.forEach((checkbox) => {
         if (processedCheckboxes.has(checkbox)) return;
         if (!isCalendarCheckbox(checkbox)) return;
 
+        foundNew = true;
         processedCheckboxes.add(checkbox);
 
         const calendarId = getCalendarId(checkbox);
@@ -104,6 +126,12 @@ export async function applyPreset(calendars) {
           totalChanged++;
         }
       });
+
+      const termination = updateEarlyTerminationCheck(foundNew, noNewCheckboxCount);
+      noNewCheckboxCount = termination.count;
+      if (termination.shouldTerminate) {
+        break;
+      }
     }
 
     // 元の位置に戻す
@@ -173,23 +201,33 @@ export async function selectAll() {
     const scrollStep = Math.max(clientHeight * SCROLL_STEP_RATIO, SCROLL_STEP_MIN);
     scrollableElement.scrollTop = 0;
 
+    let noNewCheckboxCount = 0;
+
     for (let scrollPos = 0; scrollPos <= scrollHeight; scrollPos += scrollStep) {
       scrollableElement.scrollTop = scrollPos;
       await new Promise(resolve => setTimeout(resolve, SCROLL_DELAY));
 
       // 現在表示されているチェックボックスを操作
       const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+      let foundNew = false;
 
       allCheckboxes.forEach((checkbox) => {
         if (processedCheckboxes.has(checkbox)) return;
         if (!isCalendarCheckbox(checkbox)) return;
 
+        foundNew = true;
         processedCheckboxes.add(checkbox);
 
         if (!checkbox.checked) {
           setCheckboxState(checkbox, true);
         }
       });
+
+      const termination = updateEarlyTerminationCheck(foundNew, noNewCheckboxCount);
+      noNewCheckboxCount = termination.count;
+      if (termination.shouldTerminate) {
+        break;
+      }
     }
 
     // 元の位置に戻す
@@ -274,17 +312,21 @@ export async function deselectAll(includePrimary = true) {
     const scrollStep = Math.max(clientHeight * SCROLL_STEP_RATIO, SCROLL_STEP_MIN);
     scrollableElement.scrollTop = 0;
 
+    let noNewCheckboxCount = 0;
+
     for (let scrollPos = 0; scrollPos <= scrollHeight; scrollPos += scrollStep) {
       scrollableElement.scrollTop = scrollPos;
       await new Promise(resolve => setTimeout(resolve, SCROLL_DELAY));
 
       // 現在表示されているチェックボックスを操作
       const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+      let foundNew = false;
 
       allCheckboxes.forEach((checkbox) => {
         if (processedCheckboxes.has(checkbox)) return;
         if (!isCalendarCheckbox(checkbox)) return;
 
+        foundNew = true;
         processedCheckboxes.add(checkbox);
 
         // 最初のカレンダーをプライマリとして記録
@@ -300,6 +342,12 @@ export async function deselectAll(includePrimary = true) {
           totalDeselected++;
         }
       });
+
+      const termination = updateEarlyTerminationCheck(foundNew, noNewCheckboxCount);
+      noNewCheckboxCount = termination.count;
+      if (termination.shouldTerminate) {
+        break;
+      }
     }
 
     // 元の位置に戻す
