@@ -138,9 +138,21 @@ export async function editPreset(presetId) {
     const currentViewTypeName = response.viewType ? viewTypeLabels[response.viewType] : '-';
     document.getElementById('currentViewType').textContent = currentViewTypeName;
 
+    // セレクトボックスの初期値をプリセットに保存されている viewType に設定
+    const editViewTypeSelect = document.getElementById('editViewType');
+    if (!editViewTypeSelect) {
+      console.error('editViewType select not found');
+      return;
+    }
+    editViewTypeSelect.value = preset.viewType || '';
+
     // チェックボックスの初期値を設定
-    document.getElementById('saveViewTypeForPreset').checked = preset.saveViewType ?? true;
-    document.getElementById('applyViewTypeForPreset').checked = preset.applyViewType ?? true;
+    const applyViewTypeCheckbox = document.getElementById('applyViewTypeForPreset');
+    if (!applyViewTypeCheckbox) {
+      console.error('applyViewTypeForPreset checkbox not found');
+      return;
+    }
+    applyViewTypeCheckbox.checked = preset.applyViewType ?? true;
 
     // 編集ビューを表示
     showEditView();
@@ -169,9 +181,19 @@ export async function updatePreset() {
   const tab = await getActiveTab();
 
   try {
-    // プリセット個別設定を読み取り
-    const saveViewType = document.getElementById('saveViewTypeForPreset').checked;
-    const applyViewType = document.getElementById('applyViewTypeForPreset').checked;
+    // セレクトボックスから表示形式を取得
+    const editViewTypeSelect = document.getElementById('editViewType');
+    if (!editViewTypeSelect) {
+      console.error('editViewType select not found');
+      return;
+    }
+    const selectedViewType = editViewTypeSelect.value;
+    const applyViewTypeCheckbox = document.getElementById('applyViewTypeForPreset');
+    if (!applyViewTypeCheckbox) {
+      console.error('applyViewTypeForPreset checkbox not found');
+      return;
+    }
+    const applyViewType = applyViewTypeCheckbox.checked;
 
     const response = await sendMessageToTab(tab.id, { action: 'getCurrentState' });
 
@@ -188,15 +210,15 @@ export async function updatePreset() {
       return;
     }
 
-    // 個別設定に応じて viewType を保存
-    const viewType = saveViewType ? response.viewType : presets[editingId].viewType;
+    // セレクトボックスの値を viewType として使用（空文字の場合は null）
+    const viewType = selectedViewType || null;
 
     // 既存のプリセットを更新
     presets[editingId] = {
       name: presetName,
       calendars: response.calendars,
       viewType: viewType,
-      saveViewType: saveViewType,
+      saveViewType: viewType !== null,
       applyViewType: applyViewType,
       createdAt: presets[editingId].createdAt,
       updatedAt: new Date().toISOString(),
