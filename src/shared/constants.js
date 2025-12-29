@@ -19,17 +19,6 @@ export const DEFAULT_SETTINGS = {
  */
 export const DEFAULT_INCLUDE_PRIMARY = false;
 
-// 表示形式の日本語ラベル
-export const VIEW_TYPE_LABELS = {
-  'day': '日',
-  'week': '週',
-  'month': '月',
-  'year': '年',
-  'agenda': 'スケジュール',
-  'customweek': 'カスタム（週）',
-  'customday': 'カスタム（日）'
-};
-
 // スクロール設定
 export const SCROLL_STEP_RATIO = 0.8; // 画面の80%ずつスクロール
 export const SCROLL_STEP_MIN = 200;   // 最小スクロール量（px）
@@ -62,3 +51,31 @@ export const EARLY_CANCEL_DETECTION_THRESHOLD = 10;  // 早期キャンセル検
 export const PAGE_LOAD_TIMEOUT_MS = 5000;            // ページ読み込みのタイムアウト（ms）
 export const POST_TIMEOUT_MAX_CHECKS = 50;           // タイムアウト後の追加確認回数（100ms × 50 = 5秒）
 export const CALENDAR_INIT_DELAY_MS = 500;           // カレンダー初期化待機時間（ms）
+
+/**
+ * カレンダーグループ判定用キーワード
+ * 折りたたまれているグループを展開する際に、カレンダーグループかどうかを判定するために使用
+ * 新しい言語を追加する場合はここにキーワードを追加
+ */
+export const CALENDAR_GROUP_KEYWORDS = [
+  // 日本語
+  'カレンダー',
+  'マイ',
+  '他の',
+  // 英語
+  'calendar',
+  'My',
+  'Other'
+];
+
+/**
+ * 検索フィールド判定用キーワード
+ * カレンダーチェックボックス検出時に検索フィールドを除外するために使用
+ * 新しい言語を追加する場合はここにキーワードを追加
+ */
+export const SEARCH_FIELD_KEYWORDS = [
+  // 日本語
+  '検索',
+  // 英語
+  'search'
+];

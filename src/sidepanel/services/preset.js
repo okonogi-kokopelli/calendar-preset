@@ -4,9 +4,9 @@ import { showMainView, showEditView, setEditingPresetId, getEditingPresetId } fr
 import { loadSettings, loadPresets, savePresets } from './storage.js';
 import { isCalendarTab, getActiveTab, sendMessageToTab } from './tabs.js';
 import { renderPresets } from '../components/preset-list.js';
-import { viewTypeLabels } from '../constants.js';
 import { CALENDAR_INIT_DELAY_MS } from '../../shared/constants.js';
 import { waitForPageTransition } from '../utils/page-transition.js';
+import { getMessage, getViewTypeLabel, isJapanese } from '../../shared/i18n.js';
 
 // プリセット保存
 export async function savePreset() {
@@ -14,12 +14,12 @@ export async function savePreset() {
   const presetName = sanitizeInput(rawPresetName);
 
   if (!presetName) {
-    showMessage('プリセット名を入力してください', 'error');
+    showMessage(getMessage('msgEnterPresetName'), 'error');
     return;
   }
 
   if (!await isCalendarTab()) {
-    showMessage('Googleカレンダーのページで実行してください', 'error');
+    showMessage(getMessage('msgOpenGoogleCalendar'), 'error');
     return;
   }
 
@@ -32,7 +32,7 @@ export async function savePreset() {
     const response = await sendMessageToTab(tab.id, { action: 'getCurrentState' });
 
     if (!response || !response.calendars) {
-      showMessage('カレンダー情報を取得できませんでした', 'error');
+      showMessage(getMessage('msgFailedToGetCalendar'), 'error');
       return;
     }
 
@@ -60,18 +60,18 @@ export async function savePreset() {
     await savePresets(presets);
 
     document.getElementById('presetName').value = '';
-    showMessage(`プリセット「${presetName}」を保存しました`, 'success');
+    showMessage(getMessage('msgPresetSaved', presetName), 'success');
     await renderPresets(editPreset, deletePreset, applyPreset);
   } catch (error) {
     console.error('Error saving preset:', error);
-    showMessage('保存に失敗しました。ページを再読み込みしてください', 'error');
+    showMessage(getMessage('msgSaveFailed'), 'error');
   }
 }
 
 // プリセット編集
 export async function editPreset(presetId) {
   if (!await isCalendarTab()) {
-    showMessage('Googleカレンダーのページで実行してください', 'error');
+    showMessage(getMessage('msgOpenGoogleCalendar'), 'error');
     return;
   }
 
@@ -79,7 +79,7 @@ export async function editPreset(presetId) {
   const preset = presets[presetId];
 
   if (!preset) {
-    showMessage('プリセットが見つかりません', 'error');
+    showMessage(getMessage('msgPresetNotFound'), 'error');
     return;
   }
 
@@ -102,40 +102,42 @@ export async function editPreset(presetId) {
     const editPresetInfo = document.getElementById('editPresetInfo');
     editPresetInfo.textContent = ''; // クリア
 
-    const createdDate = new Date(preset.createdAt).toLocaleString('ja-JP');
+    // ロケールに応じた日付フォーマット
+    const locale = isJapanese() ? 'ja-JP' : 'en-US';
+    const createdDate = new Date(preset.createdAt).toLocaleString(locale);
 
     const createdP = document.createElement('p');
-    createdP.textContent = `作成日時: ${createdDate}`;
+    createdP.textContent = getMessage('createdAt', createdDate);
     createdP.style.margin = '0 0 4px 0';
     editPresetInfo.appendChild(createdP);
 
     if (preset.updatedAt) {
-      const updatedDate = new Date(preset.updatedAt).toLocaleString('ja-JP');
+      const updatedDate = new Date(preset.updatedAt).toLocaleString(locale);
       const updatedP = document.createElement('p');
-      updatedP.textContent = `最終更新: ${updatedDate}`;
+      updatedP.textContent = getMessage('updatedAt', updatedDate);
       updatedP.style.margin = '0 0 4px 0';
       editPresetInfo.appendChild(updatedP);
     }
 
     const countP = document.createElement('p');
-    countP.textContent = `登録カレンダー数: ${preset.calendars.length}個`;
+    countP.textContent = getMessage('calendarCount', preset.calendars.length.toString());
     countP.style.margin = '0 0 4px 0';
     editPresetInfo.appendChild(countP);
 
     // 保存されている表示形式を表示
     const viewTypeP = document.createElement('p');
     if (preset.viewType) {
-      const viewTypeName = viewTypeLabels[preset.viewType] || preset.viewType;
-      viewTypeP.textContent = `表示形式: ${viewTypeName}`;
+      const viewTypeName = getViewTypeLabel(preset.viewType);
+      viewTypeP.textContent = getMessage('viewTypeLabel', viewTypeName);
     } else {
-      viewTypeP.textContent = '表示形式: -';
+      viewTypeP.textContent = getMessage('viewTypeLabel', '-');
     }
     viewTypeP.style.margin = '0';
     editPresetInfo.appendChild(viewTypeP);
 
     // 現在の viewType を取得して表示
     const response = await sendMessageToTab(tab.id, { action: 'getCurrentState' });
-    const currentViewTypeName = response.viewType ? viewTypeLabels[response.viewType] : '-';
+    const currentViewTypeName = response.viewType ? getViewTypeLabel(response.viewType) : '-';
     document.getElementById('currentViewType').textContent = currentViewTypeName;
 
     // セレクトボックスの初期値をプリセットに保存されている viewType に設定
@@ -156,10 +158,10 @@ export async function editPreset(presetId) {
 
     // 編集ビューを表示
     showEditView();
-    showMessage(`プリセット「${preset.name}」を適用しました`, 'success', true);
+    showMessage(getMessage('msgPresetApplied', preset.name), 'success', true);
   } catch (error) {
     console.error('Error editing preset:', error);
-    showMessage('編集に失敗しました。ページを再読み込みしてください', 'error');
+    showMessage(getMessage('msgEditFailed'), 'error');
   }
 }
 
@@ -169,12 +171,12 @@ export async function updatePreset() {
   const presetName = sanitizeInput(rawPresetName);
 
   if (!presetName) {
-    showMessage('プリセット名を入力してください', 'error', true);
+    showMessage(getMessage('msgEnterPresetName'), 'error', true);
     return;
   }
 
   if (!await isCalendarTab()) {
-    showMessage('Googleカレンダーのページで実行してください', 'error', true);
+    showMessage(getMessage('msgOpenGoogleCalendar'), 'error', true);
     return;
   }
 
@@ -198,7 +200,7 @@ export async function updatePreset() {
     const response = await sendMessageToTab(tab.id, { action: 'getCurrentState' });
 
     if (!response || !response.calendars) {
-      showMessage('カレンダー情報を取得できませんでした', 'error', true);
+      showMessage(getMessage('msgFailedToGetCalendar'), 'error', true);
       return;
     }
 
@@ -206,7 +208,7 @@ export async function updatePreset() {
     const editingId = getEditingPresetId();
 
     if (!presets[editingId]) {
-      showMessage('プリセットが見つかりません', 'error', true);
+      showMessage(getMessage('msgPresetNotFound'), 'error', true);
       return;
     }
 
@@ -227,25 +229,25 @@ export async function updatePreset() {
 
     await savePresets(presets);
 
-    showMessage(`プリセット「${presetName}」を更新しました`, 'success');
+    showMessage(getMessage('msgPresetUpdated', presetName), 'success');
     showMainView();
     await renderPresets(editPreset, deletePreset, applyPreset);
   } catch (error) {
     console.error('Error updating preset:', error);
-    showMessage('更新に失敗しました', 'error', true);
+    showMessage(getMessage('msgUpdateFailed'), 'error', true);
   }
 }
 
 // 編集キャンセル
 export function cancelEditView() {
   showMainView();
-  showMessage('編集をキャンセルしました', 'info');
+  showMessage(getMessage('msgEditCancelled'), 'info');
 }
 
 // プリセット適用
 export async function applyPreset(presetId, buttonElement) {
   if (!await isCalendarTab()) {
-    showMessage('Googleカレンダーのページで実行してください', 'error');
+    showMessage(getMessage('msgOpenGoogleCalendar'), 'error');
     return;
   }
 
@@ -253,13 +255,13 @@ export async function applyPreset(presetId, buttonElement) {
   const preset = presets[presetId];
 
   if (!preset) {
-    showMessage('プリセットが見つかりません', 'error');
+    showMessage(getMessage('msgPresetNotFound'), 'error');
     return;
   }
 
   // ボタンをローディング状態にする
   const originalText = buttonElement.textContent;
-  buttonElement.textContent = '適用中...';
+  buttonElement.textContent = getMessage('msgApplying');
   buttonElement.disabled = true;
   buttonElement.classList.add('loading');
 
@@ -289,7 +291,7 @@ export async function applyPreset(presetId, buttonElement) {
           const result = await waitForPageTransition(tab, currentUrl, newUrl, preset.viewType);
 
           if (!result.success) {
-            showMessage('表示形式の変更がキャンセルされました', 'info');
+            showMessage(getMessage('msgViewTypeChangeCancelled'), 'info');
             return; // カレンダー適用をスキップして終了
           }
         }
@@ -317,10 +319,10 @@ export async function applyPreset(presetId, buttonElement) {
       });
     }
 
-    showMessage(`プリセット「${preset.name}」を適用しました`, 'success');
+    showMessage(getMessage('msgPresetApplied', preset.name), 'success');
   } catch (error) {
     console.error('Error applying preset:', error);
-    showMessage('適用に失敗しました。ページを再読み込みしてください', 'error');
+    showMessage(getMessage('msgApplyFailed'), 'error');
   } finally {
     // ボタンを元に戻す
     buttonElement.textContent = originalText;
@@ -331,7 +333,7 @@ export async function applyPreset(presetId, buttonElement) {
 
 // プリセット削除
 export async function deletePreset(presetId) {
-  if (!confirm('このプリセットを削除しますか？')) {
+  if (!confirm(getMessage('msgConfirmDelete'))) {
     return;
   }
 
@@ -341,6 +343,6 @@ export async function deletePreset(presetId) {
   delete presets[presetId];
   await savePresets(presets);
 
-  showMessage(`プリセット「${presetName}」を削除しました`, 'success');
+  showMessage(getMessage('msgPresetDeleted', presetName), 'success');
   await renderPresets(editPreset, deletePreset, applyPreset);
 }

@@ -1,0 +1,242 @@
+{
+  "extName": {
+    "message": "Calendar Preset"
+  },
+  "extDescription": {
+    "message": "Googleカレンダーの表示設定をプリセットで保存・切り替え"
+  },
+
+  "saveCurrentState": {
+    "message": "現在の状態を保存"
+  },
+  "presetNamePlaceholder": {
+    "message": "プリセット名（例: 仕事用）"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "quickActions": {
+    "message": "クイックアクション"
+  },
+  "selectAll": {
+    "message": "全て選択"
+  },
+  "deselectAll": {
+    "message": "全て解除"
+  },
+  "includePrimaryLabel": {
+    "message": "全て解除時に自分のカレンダーも解除する"
+  },
+  "savedPresets": {
+    "message": "保存済みプリセット"
+  },
+  "noPresets": {
+    "message": "プリセットがありません"
+  },
+  "back": {
+    "message": "戻る"
+  },
+  "editPreset": {
+    "message": "プリセット編集"
+  },
+  "presetInfo": {
+    "message": "プリセット情報"
+  },
+  "presetName": {
+    "message": "プリセット名"
+  },
+  "calendarSettings": {
+    "message": "カレンダー設定"
+  },
+  "editInstruction": {
+    "message": "Googleカレンダーで表示したいカレンダーをチェックしてください。"
+  },
+  "editHint": {
+    "message": "現在のプリセットが適用されています。カレンダーを調整後、下の「更新」ボタンをクリックしてください。"
+  },
+  "viewType": {
+    "message": "表示形式"
+  },
+  "currentViewType": {
+    "message": "現在の表示形式:"
+  },
+  "savedViewType": {
+    "message": "保存する表示形式:"
+  },
+  "applyViewTypeOnApply": {
+    "message": "適用時に表示形式も切り替える"
+  },
+  "update": {
+    "message": "更新"
+  },
+  "cancel": {
+    "message": "キャンセル"
+  },
+  "settings": {
+    "message": "設定"
+  },
+  "saveViewTypeSection": {
+    "message": "表示形式の保存"
+  },
+  "saveViewTypeByDefault": {
+    "message": "プリセット保存時に表示形式も保存する"
+  },
+  "saveViewTypeHint": {
+    "message": "OFF: 表示形式は保存されません"
+  },
+  "applyViewTypeSection": {
+    "message": "表示形式の切り替え"
+  },
+  "applyViewTypeByDefault": {
+    "message": "プリセット適用時に表示形式も切り替える"
+  },
+  "applyViewTypeHint": {
+    "message": "OFF: プリセット適用時に表示形式は変更されません"
+  },
+
+  "viewTypeDay": {
+    "message": "日"
+  },
+  "viewTypeWeek": {
+    "message": "週"
+  },
+  "viewTypeMonth": {
+    "message": "月"
+  },
+  "viewTypeYear": {
+    "message": "年"
+  },
+  "viewTypeAgenda": {
+    "message": "スケジュール"
+  },
+  "viewTypeCustomWeek": {
+    "message": "カスタム（週）"
+  },
+  "viewTypeCustomDay": {
+    "message": "カスタム（日）"
+  },
+
+  "msgEnterPresetName": {
+    "message": "プリセット名を入力してください"
+  },
+  "msgOpenGoogleCalendar": {
+    "message": "Googleカレンダーのページで実行してください"
+  },
+  "msgFailedToGetCalendar": {
+    "message": "カレンダー情報を取得できませんでした"
+  },
+  "msgPresetSaved": {
+    "message": "プリセット「$name$」を保存しました",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgSaveFailed": {
+    "message": "保存に失敗しました。ページを再読み込みしてください"
+  },
+  "msgPresetNotFound": {
+    "message": "プリセットが見つかりません"
+  },
+  "msgPresetApplied": {
+    "message": "プリセット「$name$」を適用しました",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgEditFailed": {
+    "message": "編集に失敗しました。ページを再読み込みしてください"
+  },
+  "msgPresetUpdated": {
+    "message": "プリセット「$name$」を更新しました",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgUpdateFailed": {
+    "message": "更新に失敗しました"
+  },
+  "msgEditCancelled": {
+    "message": "編集をキャンセルしました"
+  },
+  "msgApplying": {
+    "message": "適用中..."
+  },
+  "msgViewTypeChangeCancelled": {
+    "message": "表示形式の変更がキャンセルされました"
+  },
+  "msgApplyFailed": {
+    "message": "適用に失敗しました。ページを再読み込みしてください"
+  },
+  "msgConfirmDelete": {
+    "message": "このプリセットを削除しますか？"
+  },
+  "msgPresetDeleted": {
+    "message": "プリセット「$name$」を削除しました",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgAllSelected": {
+    "message": "全てのカレンダーを選択しました"
+  },
+  "msgAllDeselected": {
+    "message": "全てのカレンダーを解除しました"
+  },
+  "msgOperationFailed": {
+    "message": "操作に失敗しました"
+  },
+  "msgSettingsSaved": {
+    "message": "設定を保存しました"
+  },
+
+  "createdAt": {
+    "message": "作成日時: $date$",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "updatedAt": {
+    "message": "最終更新: $date$",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "calendarCount": {
+    "message": "登録カレンダー数: $count$個",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "viewTypeLabel": {
+    "message": "表示形式: $type$",
+    "placeholders": {
+      "type": {
+        "content": "$1"
+      }
+    }
+  },
+
+  "apply": {
+    "message": "適用"
+  },
+  "edit": {
+    "message": "編集"
+  },
+  "delete": {
+    "message": "削除"
+  }
+}
