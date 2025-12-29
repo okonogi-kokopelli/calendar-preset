@@ -1,4 +1,4 @@
-import { MAX_CALENDAR_TEXT_LENGTH } from '../../shared/constants.js';
+import { MAX_CALENDAR_TEXT_LENGTH, CALENDAR_GROUP_KEYWORDS, SEARCH_FIELD_KEYWORDS } from '../../shared/constants.js';
 
 export function waitForDomStable(container, { timeout = 500, stableTime = 50 } = {}) {
   return new Promise((resolve) => {
@@ -52,15 +52,13 @@ export async function expandAllCalendarGroups() {
     const text = button.textContent?.trim() || button.getAttribute('aria-label') || '';
     const ariaLabel = button.getAttribute('aria-label') || '';
 
-    // カレンダー関連のキーワードを含む場合のみ展開
-    const isCalendarGroup = text.includes('カレンダー') ||
-                           text.includes('calendar') ||
-                           ariaLabel.includes('カレンダー') ||
-                           ariaLabel.includes('calendar') ||
-                           text.includes('マイ') ||
-                           text.includes('My') ||
-                           text.includes('他の') ||
-                           text.includes('Other');
+    // カレンダー関連のキーワードを含む場合のみ展開（大文字小文字を区別しない）
+    const textLower = text.toLowerCase();
+    const ariaLabelLower = ariaLabel.toLowerCase();
+    const isCalendarGroup = CALENDAR_GROUP_KEYWORDS.some(keyword => {
+      const keywordLower = keyword.toLowerCase();
+      return textLower.includes(keywordLower) || ariaLabelLower.includes(keywordLower);
+    });
 
     if (isCalendarGroup) {
       button.click();
@@ -94,12 +92,18 @@ export function findScrollableElement(sampleElement) {
   return null;
 }
 
+// 検索フィールドを除外するための判定（大文字小文字を区別しない）
+function isSearchField(text) {
+  const textLower = text.toLowerCase();
+  return SEARCH_FIELD_KEYWORDS.some(keyword => textLower.includes(keyword.toLowerCase()));
+}
+
 // サンプルチェックボックスを探す
 export function findSampleCheckbox() {
   return Array.from(document.querySelectorAll('input[type="checkbox"]')).find(cb => {
     const parent = cb.closest('li') || cb.closest('div');
     const text = parent?.textContent?.trim() || '';
-    return text.length > 0 && text.length < MAX_CALENDAR_TEXT_LENGTH && !text.includes('検索');
+    return text.length > 0 && text.length < MAX_CALENDAR_TEXT_LENGTH && !isSearchField(text);
   });
 }
 
@@ -107,5 +111,5 @@ export function findSampleCheckbox() {
 export function isCalendarCheckbox(checkbox) {
   const parent = checkbox.closest('li') || checkbox.closest('div') || checkbox.parentElement;
   const rawText = parent?.textContent?.trim() || '';
-  return rawText && rawText.length > 0 && rawText.length < MAX_CALENDAR_TEXT_LENGTH && !rawText.includes('検索');
+  return rawText && rawText.length > 0 && rawText.length < MAX_CALENDAR_TEXT_LENGTH && !isSearchField(rawText);
 }

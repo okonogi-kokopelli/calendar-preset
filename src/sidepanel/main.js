@@ -12,11 +12,12 @@ import {
   applyPreset,
   deletePreset
 } from './services/preset.js';
+import { getMessage, translatePage } from '../shared/i18n.js';
 
 // 全て選択
 async function selectAll() {
   if (!await isCalendarTab()) {
-    showMessage('Googleカレンダーのページで実行してください', 'error');
+    showMessage(getMessage('msgOpenGoogleCalendar'), 'error');
     return;
   }
 
@@ -26,17 +27,17 @@ async function selectAll() {
     await sendMessageToTab(tab.id, {
       action: 'selectAll'
     });
-    showMessage('全てのカレンダーを選択しました', 'success');
+    showMessage(getMessage('msgAllSelected'), 'success');
   } catch (error) {
     console.error('Error selecting all:', error);
-    showMessage('操作に失敗しました', 'error');
+    showMessage(getMessage('msgOperationFailed'), 'error');
   }
 }
 
 // 全て解除
 async function deselectAll() {
   if (!await isCalendarTab()) {
-    showMessage('Googleカレンダーのページで実行してください', 'error');
+    showMessage(getMessage('msgOpenGoogleCalendar'), 'error');
     return;
   }
 
@@ -48,10 +49,10 @@ async function deselectAll() {
       action: 'deselectAll',
       includePrimary: includePrimary
     });
-    showMessage('全てのカレンダーを解除しました', 'success');
+    showMessage(getMessage('msgAllDeselected'), 'success');
   } catch (error) {
     console.error('Error deselecting all:', error);
-    showMessage('操作に失敗しました', 'error');
+    showMessage(getMessage('msgOperationFailed'), 'error');
   }
 }
 
@@ -78,7 +79,7 @@ async function saveSettingsFromUI() {
   await saveSettings(settings);
 
   const messageEl = document.getElementById('settingsMessage');
-  messageEl.textContent = '設定を保存しました';
+  messageEl.textContent = getMessage('msgSettingsSaved');
   messageEl.className = 'message success';
   messageEl.style.display = 'block';
 
@@ -95,6 +96,9 @@ async function handleIncludePrimaryChange() {
 
 // 初期化
 async function init() {
+  // ページを翻訳
+  translatePage();
+
   // プリセット一覧を表示
   await renderPresets(editPreset, deletePreset, applyPreset);
 

@@ -1,0 +1,242 @@
+{
+  "extName": {
+    "message": "Calendar Preset"
+  },
+  "extDescription": {
+    "message": "Save and switch Google Calendar display settings using presets"
+  },
+
+  "saveCurrentState": {
+    "message": "Save Current State"
+  },
+  "presetNamePlaceholder": {
+    "message": "Preset name (e.g. Work)"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "quickActions": {
+    "message": "Quick Actions"
+  },
+  "selectAll": {
+    "message": "Select All"
+  },
+  "deselectAll": {
+    "message": "Deselect All"
+  },
+  "includePrimaryLabel": {
+    "message": "Allow deselecting all calendars, including your primary calendar"
+  },
+  "savedPresets": {
+    "message": "Saved Presets"
+  },
+  "noPresets": {
+    "message": "No presets"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "editPreset": {
+    "message": "Edit Preset"
+  },
+  "presetInfo": {
+    "message": "Preset Info"
+  },
+  "presetName": {
+    "message": "Preset Name"
+  },
+  "calendarSettings": {
+    "message": "Calendar Settings"
+  },
+  "editInstruction": {
+    "message": "Check the calendars you want to display in Google Calendar."
+  },
+  "editHint": {
+    "message": "The current preset is applied. Adjust the calendars, then click the \"Update\" button below."
+  },
+  "viewType": {
+    "message": "View Type"
+  },
+  "currentViewType": {
+    "message": "Current view type:"
+  },
+  "savedViewType": {
+    "message": "View type to save:"
+  },
+  "applyViewTypeOnApply": {
+    "message": "Switch view type when applying"
+  },
+  "update": {
+    "message": "Update"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "saveViewTypeSection": {
+    "message": "Save View Type"
+  },
+  "saveViewTypeByDefault": {
+    "message": "Save view type when saving presets"
+  },
+  "saveViewTypeHint": {
+    "message": "OFF: View type will not be saved"
+  },
+  "applyViewTypeSection": {
+    "message": "Switch View Type"
+  },
+  "applyViewTypeByDefault": {
+    "message": "Switch view type when applying presets"
+  },
+  "applyViewTypeHint": {
+    "message": "OFF: View type will not change when applying presets"
+  },
+
+  "viewTypeDay": {
+    "message": "Day"
+  },
+  "viewTypeWeek": {
+    "message": "Week"
+  },
+  "viewTypeMonth": {
+    "message": "Month"
+  },
+  "viewTypeYear": {
+    "message": "Year"
+  },
+  "viewTypeAgenda": {
+    "message": "Schedule"
+  },
+  "viewTypeCustomWeek": {
+    "message": "Custom (Week)"
+  },
+  "viewTypeCustomDay": {
+    "message": "Custom (Day)"
+  },
+
+  "msgEnterPresetName": {
+    "message": "Please enter a preset name"
+  },
+  "msgOpenGoogleCalendar": {
+    "message": "Please run this on a Google Calendar page"
+  },
+  "msgFailedToGetCalendar": {
+    "message": "Failed to get calendar information"
+  },
+  "msgPresetSaved": {
+    "message": "Preset \"$name$\" saved",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgSaveFailed": {
+    "message": "Save failed. Please reload the page"
+  },
+  "msgPresetNotFound": {
+    "message": "Preset not found"
+  },
+  "msgPresetApplied": {
+    "message": "Preset \"$name$\" applied",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgEditFailed": {
+    "message": "Edit failed. Please reload the page"
+  },
+  "msgPresetUpdated": {
+    "message": "Preset \"$name$\" updated",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgUpdateFailed": {
+    "message": "Update failed"
+  },
+  "msgEditCancelled": {
+    "message": "Edit cancelled"
+  },
+  "msgApplying": {
+    "message": "Applying..."
+  },
+  "msgViewTypeChangeCancelled": {
+    "message": "View type change was cancelled"
+  },
+  "msgApplyFailed": {
+    "message": "Apply failed. Please reload the page"
+  },
+  "msgConfirmDelete": {
+    "message": "Are you sure you want to delete this preset?"
+  },
+  "msgPresetDeleted": {
+    "message": "Preset \"$name$\" deleted",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgAllSelected": {
+    "message": "All calendars selected"
+  },
+  "msgAllDeselected": {
+    "message": "All calendars deselected"
+  },
+  "msgOperationFailed": {
+    "message": "Operation failed"
+  },
+  "msgSettingsSaved": {
+    "message": "Settings saved"
+  },
+
+  "createdAt": {
+    "message": "Created: $date$",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "updatedAt": {
+    "message": "Updated: $date$",
+    "placeholders": {
+      "date": {
+        "content": "$1"
+      }
+    }
+  },
+  "calendarCount": {
+    "message": "Calendars: $count$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "viewTypeLabel": {
+    "message": "View type: $type$",
+    "placeholders": {
+      "type": {
+        "content": "$1"
+      }
+    }
+  },
+
+  "apply": {
+    "message": "Apply"
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "delete": {
+    "message": "Delete"
+  }
+}

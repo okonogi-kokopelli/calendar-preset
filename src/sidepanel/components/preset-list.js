@@ -8,6 +8,7 @@ import {
   handleDragEnter,
   handleDragLeave
 } from './drag-drop.js';
+import { getMessage } from '../../shared/i18n.js';
 
 // プリセット一覧を表示
 export async function renderPresets(editPresetCallback, deletePresetCallback, applyPresetCallback) {
@@ -30,7 +31,7 @@ export async function renderPresets(editPresetCallback, deletePresetCallback, ap
     presetList.textContent = '';
     const emptyMsg = document.createElement('p');
     emptyMsg.className = 'empty-message';
-    emptyMsg.textContent = 'プリセットがありません';
+    emptyMsg.textContent = getMessage('noPresets');
     presetList.appendChild(emptyMsg);
     return;
   }
@@ -59,7 +60,7 @@ export async function renderPresets(editPresetCallback, deletePresetCallback, ap
 
     // 適用ボタン
     const applyBtn = document.createElement('button');
-    applyBtn.textContent = '適用';
+    applyBtn.textContent = getMessage('apply');
     applyBtn.className = 'apply-btn';
     applyBtn.dataset.presetId = id;
     applyBtn.onclick = (e) => applyPresetCallback(id, e.target);
@@ -92,7 +93,7 @@ export async function renderPresets(editPresetCallback, deletePresetCallback, ap
     editIcon.alt = 'Edit';
     editIcon.className = 'menu-icon icon';
     const editText = document.createElement('span');
-    editText.textContent = '編集';
+    editText.textContent = getMessage('edit');
     editMenuItem.appendChild(editIcon);
     editMenuItem.appendChild(editText);
     editMenuItem.onclick = () => {
@@ -107,7 +108,7 @@ export async function renderPresets(editPresetCallback, deletePresetCallback, ap
     deleteIcon.alt = 'Delete';
     deleteIcon.className = 'menu-icon icon';
     const deleteText = document.createElement('span');
-    deleteText.textContent = '削除';
+    deleteText.textContent = getMessage('delete');
     deleteMenuItem.appendChild(deleteIcon);
     deleteMenuItem.appendChild(deleteText);
     deleteMenuItem.onclick = () => {

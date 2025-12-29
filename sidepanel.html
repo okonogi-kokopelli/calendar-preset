@@ -18,31 +18,31 @@
       </div>
 
       <div class="section">
-        <h2>現在の状態を保存</h2>
+        <h2 data-i18n="saveCurrentState">現在の状態を保存</h2>
         <div class="input-group">
-          <input type="text" id="presetName" placeholder="プリセット名（例: 仕事用）">
-          <button id="savePreset">保存</button>
+          <input type="text" id="presetName" data-i18n-placeholder="presetNamePlaceholder" placeholder="プリセット名（例: 仕事用）">
+          <button id="savePreset" data-i18n="save">保存</button>
         </div>
       </div>
 
       <div class="section">
-        <h2>クイックアクション</h2>
+        <h2 data-i18n="quickActions">クイックアクション</h2>
         <div class="quick-actions">
-          <button id="selectAll">全て選択</button>
-          <button id="deselectAll">全て解除</button>
+          <button id="selectAll" data-i18n="selectAll">全て選択</button>
+          <button id="deselectAll" data-i18n="deselectAll">全て解除</button>
         </div>
         <div class="quick-action-settings">
           <label class="checkbox-label">
             <input type="checkbox" id="includePrimary">
-            <span>全て解除時に自分のカレンダーも解除</span>
+            <span data-i18n="includePrimaryLabel">全て解除時に自分のカレンダーも解除</span>
           </label>
         </div>
       </div>
 
       <div class="section">
-        <h2>保存済みプリセット</h2>
+        <h2 data-i18n="savedPresets">保存済みプリセット</h2>
         <div id="presetList" class="preset-list">
-          <p class="empty-message">プリセットがありません</p>
+          <p class="empty-message" data-i18n="noPresets">プリセットがありません</p>
         </div>
       </div>
 
@@ -54,58 +54,60 @@
       <div class="edit-header">
         <button id="backToMain" class="back-btn">
           <img src="assets/icons/arrow.svg" alt="Back" class="icon">
-          戻る
+          <span data-i18n="back">戻る</span>
         </button>
-        <h1>プリセット編集</h1>
+        <h1 data-i18n="editPreset">プリセット編集</h1>
       </div>
 
       <div class="section">
-        <h2>プリセット情報</h2>
+        <h2 data-i18n="presetInfo">プリセット情報</h2>
         <div class="edit-info">
           <p id="editPresetInfo"></p>
         </div>
       </div>
 
       <div class="section">
-        <h2>プリセット名</h2>
+        <h2 data-i18n="presetName">プリセット名</h2>
         <div class="input-group">
-          <input type="text" id="editPresetName" placeholder="プリセット名">
+          <input type="text" id="editPresetName" data-i18n-placeholder="presetName" placeholder="プリセット名">
         </div>
       </div>
 
       <div class="section">
-        <h2>カレンダー設定</h2>
+        <h2 data-i18n="calendarSettings">カレンダー設定</h2>
         <div class="edit-instruction">
-          <p>Googleカレンダーで表示したいカレンダーをチェックしてください。</p>
-          <p class="hint">現在のプリセットが適用されています。カレンダーを調整後、下の「更新」ボタンをクリックしてください。</p>
+          <p data-i18n="editInstruction">Googleカレンダーで表示したいカレンダーをチェックしてください。</p>
+          <p class="hint" data-i18n="editHint">現在のプリセットが適用されています。カレンダーを調整後、下の「更新」ボタンをクリックしてください。</p>
         </div>
       </div>
 
       <div class="section">
-        <h2>表示形式</h2>
-        <p class="hint">現在の表示形式: <span id="currentViewType">-</span></p>
+        <h2 data-i18n="viewType">表示形式</h2>
+        <p class="hint"><span data-i18n="currentViewType">現在の表示形式:</span> <span id="currentViewType">-</span></p>
 
         <div class="select-group">
-          <label for="editViewType">保存する表示形式:</label>
+          <label for="editViewType" data-i18n="savedViewType">保存する表示形式:</label>
           <select id="editViewType">
-            <option value="day">日</option>
-            <option value="week">週</option>
-            <option value="month">月</option>
-            <option value="year">年</option>
-            <option value="agenda">スケジュール</option>
+            <option value="day" data-i18n="viewTypeDay">日</option>
+            <option value="week" data-i18n="viewTypeWeek">週</option>
+            <option value="month" data-i18n="viewTypeMonth">月</option>
+            <option value="year" data-i18n="viewTypeYear">年</option>
+            <option value="agenda" data-i18n="viewTypeAgenda">スケジュール</option>
+            <option value="customweek" data-i18n="viewTypeCustomWeek">カスタム（週）</option>
+            <option value="customday" data-i18n="viewTypeCustomDay">カスタム（日）</option>
           </select>
         </div>
 
         <label class="checkbox-label">
           <input type="checkbox" id="applyViewTypeForPreset">
-          <span>適用時に表示形式も切り替える</span>
+          <span data-i18n="applyViewTypeOnApply">適用時に表示形式も切り替える</span>
         </label>
       </div>
 
       <div class="section">
         <div class="edit-actions">
-          <button id="updatePreset" class="update-btn-large">更新</button>
-          <button id="cancelEditView" class="cancel-btn-large">キャンセル</button>
+          <button id="updatePreset" class="update-btn-large" data-i18n="update">更新</button>
+          <button id="cancelEditView" class="cancel-btn-large" data-i18n="cancel">キャンセル</button>
         </div>
       </div>
 
@@ -117,31 +119,31 @@
       <div class="edit-header">
         <button id="backToMainFromSettings" class="back-btn">
           <img src="assets/icons/arrow.svg" alt="Back" class="icon">
-          戻る
+          <span data-i18n="back">戻る</span>
         </button>
-        <h1>設定</h1>
+        <h1 data-i18n="settings">設定</h1>
       </div>
 
       <div class="section">
-        <h2>表示形式の保存</h2>
+        <h2 data-i18n="saveViewTypeSection">表示形式の保存</h2>
         <label class="checkbox-label">
           <input type="checkbox" id="saveViewTypeByDefault">
-          <span>プリセット保存時に表示形式も保存する</span>
+          <span data-i18n="saveViewTypeByDefault">プリセット保存時に表示形式も保存する</span>
         </label>
-        <p class="hint">OFF: 表示形式は保存されません</p>
+        <p class="hint" data-i18n="saveViewTypeHint">OFF: 表示形式は保存されません</p>
       </div>
 
       <div class="section">
-        <h2>表示形式の切り替え</h2>
+        <h2 data-i18n="applyViewTypeSection">表示形式の切り替え</h2>
         <label class="checkbox-label">
           <input type="checkbox" id="applyViewTypeByDefault">
-          <span>プリセット適用時に表示形式も切り替える</span>
+          <span data-i18n="applyViewTypeByDefault">プリセット適用時に表示形式も切り替える</span>
         </label>
-        <p class="hint">OFF: プリセット適用時に表示形式は変更されません</p>
+        <p class="hint" data-i18n="applyViewTypeHint">OFF: プリセット適用時に表示形式は変更されません</p>
       </div>
 
       <div class="section">
-        <button id="saveSettings">保存</button>
+        <button id="saveSettings" data-i18n="save">保存</button>
       </div>
 
       <div id="settingsMessage" class="message"></div>
